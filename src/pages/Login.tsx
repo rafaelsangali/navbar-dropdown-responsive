@@ -8,7 +8,6 @@ export default function Login() {
 
   function handleSubmit(e: any) {
     e.preventDefault();
-    // console.log("foi", { email }, { password });
     login(email, password);
   }
 
