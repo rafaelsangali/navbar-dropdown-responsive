@@ -1,32 +1,31 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { requestApi } from "../../services/api";
 import { IAuthProvider, IContext, IUser } from "./types";
 
 export const AuthContext = createContext({} as IContext);
 
 export function AuthProvider({ children }: IAuthProvider) {
   const [user, setUser] = useState<IUser | null>();
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isLogged = localStorage.getItem("user")
-    if(isLogged){
-      setUser(JSON.parse(isLogged))
+    const isLogged = localStorage.getItem("user");
+    if (isLogged) {
+      setUser(JSON.parse(isLogged));
     }
-    setLoading(false)
-  },[])
+    setLoading(false);
+  }, []);
 
   const login = (email: string, password: string) => {
-    axios
-      .post("https://reqres.in/api/login", {
+    requestApi.post("/login", {
         email: email,
         password: password,
       })
       .then(function (response) {
-        console.log(response.data);
-        localStorage.setItem("user", JSON.stringify(response.data))
+        localStorage.setItem("user", JSON.stringify(response.data));
         setUser(response.data);
         navigate("/");
       })
@@ -36,7 +35,7 @@ export function AuthProvider({ children }: IAuthProvider) {
   };
 
   const logout = () => {
-    localStorage.removeItem("user")
+    localStorage.removeItem("user");
     setUser(null);
     navigate("/login");
   };
