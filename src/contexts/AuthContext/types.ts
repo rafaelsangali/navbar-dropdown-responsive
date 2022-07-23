@@ -8,6 +8,7 @@ export interface IContext extends IUser {
   user: IUser | null | undefined; 
   login: (email: string, password: string) => void; 
   logout: () => void;
+  loading: boolean;
 }
 
 export interface IAuthProvider {

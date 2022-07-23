@@ -1,16 +1,15 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 
-
 export default function Login() {
-  const [email,setEmail] = useState("")
-  const [password,setPassword] = useState("")
-  const { authenticated , login} = useContext(AuthContext)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { authenticated, login } = useContext(AuthContext);
 
-  function handleSubmit(e:any) {
+  function handleSubmit(e: any) {
     e.preventDefault();
-    console.log("foi",{email},{password});
-    login(email,password)
+    // console.log("foi", { email }, { password });
+    login(email, password);
   }
 
   return (

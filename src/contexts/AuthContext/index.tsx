@@ -1,59 +1,51 @@
-import { createContext, useState } from "react";
+import axios from "axios";
+import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IAuthProvider, IContext, IUser } from "./types";
 
-export const AuthContext = createContext<IContext>({} as IContext);
+export const AuthContext = createContext({} as IContext);
 
 export function AuthProvider({ children }: IAuthProvider) {
   const [user, setUser] = useState<IUser | null>();
+  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isLogged = localStorage.getItem("user")
+    if(isLogged){
+      setUser(JSON.parse(isLogged))
+    }
+    setLoading(false)
+  },[])
 
   const login = (email: string, password: string) => {
-    console.log('login', email, password)
-    if(password == '123'){
-      navigate("/")
-    }
-  }
+    axios
+      .post("https://reqres.in/api/login", {
+        email: email,
+        password: password,
+      })
+      .then(function (response) {
+        console.log(response.data);
+        localStorage.setItem("user", JSON.stringify(response.data))
+        setUser(response.data);
+        navigate("/");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   const logout = () => {
-    console.log('logout')
-    setUser(null)
-    navigate("/login")
-  }
-
-  const navigate = useNavigate()
+    localStorage.removeItem("user")
+    setUser(null);
+    navigate("/login");
+  };
 
   return (
-    <AuthContext.Provider value={{ authenticated: !!user, user, login, logout }}>
+    <AuthContext.Provider
+      value={{ authenticated: !!user, user, login, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
-
-// export function AuthProvider({ children }: IAuthProvider) {
-//   const [user, setUser] = useState<IUser | null>();
-
-//   useEffect(() => {
-//     const user = getUserLocalStorage();
-//     if (user) {
-//       setUser(user);
-//     }
-//   }, []);
-
-//   async function authenticate(email: string, password: string) {
-//     const response = await useLogin(email, password);
-//     const payload = { token: response.token, email };
-//     setUser(payload);
-//     setUserLocalStorage(payload);
-//   }
-
-//   function logout() {
-//     setUser(null);
-//     setUserLocalStorage(null);
-//   }
-
-//   return (
-//     <AuthContext.Provider value={{ ...user, authenticate, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// }
