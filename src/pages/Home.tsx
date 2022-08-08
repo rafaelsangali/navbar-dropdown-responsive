@@ -8,8 +8,10 @@ const inputs = [
 
 export default function Home() {
   function handleSubmit(e: any) {
-    console.log(e.target[0].checked);
     e.preventDefault();
+    for (let i = 0; e.target.length >= i; i++) {
+      console.log("input " + i + " = " + e.target[i].checked);
+    }
   }
 
   return (
@@ -25,9 +27,9 @@ export default function Home() {
           <label htmlFor={ingrediente.title}>{ingrediente.title}</label>
         </>
       ))}
-      <button 
-      className="mx-5 bg-cyan-600"
-      type="submit">Enviar</button>
+      <button className="mx-5 bg-cyan-600" type="submit">
+        Enviar
+      </button>
     </form>
   );
 }
